@@ -650,7 +650,16 @@ public class TvShowRenamer {
     if (episode.getMediaFiles(MediaFileType.VIDEO).size() > 0) {
       mf = episode.getMediaFiles(MediaFileType.VIDEO).get(0);
     }
-    switch (token.toUpperCase(Locale.ROOT)) {
+
+    String tok = token.toUpperCase(Locale.ROOT).replaceAll("\\d+","");
+    Integer number = null;
+    try {
+      number = Integer.parseInt(token.toUpperCase(Locale.ROOT).replaceAll("\\D+",""));
+    } catch (NumberFormatException e) {
+      number = null;
+    }
+
+    switch (tok) {
       // SHOW
       case "$N":
         ret = show.getTitle();
@@ -663,18 +672,23 @@ public class TvShowRenamer {
         break;
 
       // EPISODE
-      case "$1":
-        ret = String.valueOf(episode.getSeason());
-        break;
-      case "$2":
-        ret = lz(episode.getSeason());
-        break;
-      case "$3":
-        ret = String.valueOf(episode.getDvdSeason());
-        break;
-      case "$4":
-        ret = lz(episode.getDvdSeason());
-        break;
+      case "$":
+        switch (number) {
+          case 1:
+            ret = String.valueOf(episode.getSeason());
+            break;
+          case 2:
+            ret = lz(episode.getSeason());
+            break;
+          case 3:
+            ret = String.valueOf(episode.getDvdSeason());
+            break;
+          case 4:
+            ret = lz(episode.getDvdSeason());
+            break;
+          default:
+            break;
+        }
       case "$E":
         ret = lz(episode.getEpisode());
         break;
@@ -695,7 +709,11 @@ public class TvShowRenamer {
         ret = mf.getVideoResolution();
         break;
       case "$A":
-        ret = mf.getAudioCodec() + (mf.getAudioCodec().isEmpty() ? "" : "-") + mf.getAudioChannels();
+        if (number == null) {
+          ret = mf.getAudioCodec() + (mf.getAudioCodec().isEmpty() ? "" : "-") + mf.getAudioChannels();
+        } else {
+          ret = mf.getAudioCodec(number) + (mf.getAudioCodec(number).isEmpty() ? "" : "-") + mf.getAudioChannels(number);
+        }
         break;
       case "$V":
         ret = mf.getVideoCodec() + (mf.getVideoCodec().isEmpty() ? "" : "-") + mf.getVideoFormat();

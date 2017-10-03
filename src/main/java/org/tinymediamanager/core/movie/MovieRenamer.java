@@ -985,7 +985,7 @@ public class MovieRenamer {
    * @return the resulting string
    */
   private static String replaceOptionalVariable(String s, Movie movie, boolean forFilename) {
-    Pattern regex = Pattern.compile("\\$.{1}");
+    Pattern regex = Pattern.compile("(\\$[\\w#][\\d+]?)");
     Matcher mat = regex.matcher(s);
     if (mat.find()) {
       String rep = createDestination(mat.group(), movie, forFilename);
@@ -1017,15 +1017,37 @@ public class MovieRenamer {
       mf = movie.getMediaFiles(MediaFileType.VIDEO).get(0);
     }
 
-    switch (token.toUpperCase(Locale.ROOT)) {
+    String tok = token.toUpperCase(Locale.ROOT).replaceAll("\\d+","");
+    Integer number = null;
+    try {
+      number = Integer.parseInt(token.toUpperCase(Locale.ROOT).replaceAll("\\D+",""));
+    } catch (NumberFormatException e) {
+      number = null;
+    }
+
+    switch (tok) {
+      case "$":
+        switch (number) {
+          case 1:
+            ret = getFirstAlphaNum(movie.getTitle());
+            break;
+          case 2:
+            ret = getFirstAlphaNum(movie.getTitleSortable());
+            break;
+          case 3:
+            if (StringUtils.isNotBlank(mf.getVideo3DFormat())) {
+              ret = mf.getVideo3DFormat();
+            }
+            else if (movie.isVideoIn3D()) { // no MI info, but flag set from user
+              ret = "3D";
+            }
+            break;
+          default:
+            break;
+        }
+        break;
       case "$T":
         ret = movie.getTitle();
-        break;
-      case "$1":
-        ret = getFirstAlphaNum(movie.getTitle());
-        break;
-      case "$2":
-        ret = getFirstAlphaNum(movie.getTitleSortable());
         break;
       case "$Y":
         ret = movie.getYear().equals("0") ? "" : movie.getYear();
@@ -1076,16 +1098,12 @@ public class MovieRenamer {
       case "$R":
         ret = mf.getVideoResolution();
         break;
-      case "$3":
-        if (StringUtils.isNotBlank(mf.getVideo3DFormat())) {
-          ret = mf.getVideo3DFormat();
-        }
-        else if (movie.isVideoIn3D()) { // no MI info, but flag set from user
-          ret = "3D";
-        }
-        break;
       case "$A":
-        ret = mf.getAudioCodec() + (mf.getAudioCodec().isEmpty() ? "" : "-") + mf.getAudioChannels();
+        if (number == null) {
+          ret = mf.getAudioCodec() + (mf.getAudioCodec().isEmpty() ? "" : "-") + mf.getAudioChannels();
+        } else {
+          ret = mf.getAudioCodec(number) + (mf.getAudioCodec(number).isEmpty() ? "" : "-") + mf.getAudioChannels(number);
+        }
         break;
       case "$V":
         ret = mf.getVideoCodec() + (mf.getVideoCodec().isEmpty() ? "" : "-") + mf.getVideoFormat();
@@ -1146,7 +1164,7 @@ public class MovieRenamer {
     String newDestination = template;
 
     // replace all $x parameters
-    Pattern p = Pattern.compile("(\\$[\\w#])"); // # is for rating
+    Pattern p = Pattern.compile("(\\$[\\w#][\\d+]?)"); // # is for rating
     Matcher m = p.matcher(template);
     while (m.find()) {
       String value = getTokenValue(movie, m.group(1));

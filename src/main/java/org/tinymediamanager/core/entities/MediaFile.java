@@ -897,6 +897,22 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     return codec;
   }
 
+  /**
+   * gets the audio codec<br> of n-th stream (index starts at 1)
+   * (w/o punctuation; eg AC-3 => AC3).
+   *
+   * @return the audio codec
+   */
+  public String getAudioCodec(Integer index) {
+    String codec = "";
+    try {
+      codec = getAudioStreams().get(index-1).getCodec();
+    } catch (IndexOutOfBoundsException e) {
+      codec = "";
+    }
+    return codec;
+  }
+
   private MediaFileAudioStream getBestAudioStream() {
     MediaFileAudioStream highestStream = null;
     for (MediaFileAudioStream stream : audioStreams) {
@@ -920,6 +936,27 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     }
 
     return language;
+  }
+
+  public String getAudioChannels() {
+    String channels = "";
+
+    // get audio stream with highest channel count
+    MediaFileAudioStream highestStream = getBestAudioStream();
+    if (highestStream != null) {
+      channels = highestStream.getChannelsAsInt() + "ch";
+    }
+    return channels;
+  }
+
+  public String getAudioChannels(Integer index) {
+    String channels = "";
+    try {
+      channels = getAudioStreams().get(index-1).getChannelsAsInt() + "ch";
+    } catch (IndexOutOfBoundsException e) {
+      channels = "";
+    }
+    return channels;
   }
 
   /**
@@ -1079,18 +1116,6 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     String oldValue = this.exactVideoFormat;
     this.exactVideoFormat = newValue;
     firePropertyChange("exactVideoFormat", oldValue, newValue);
-  }
-
-  public String getAudioChannels() {
-    String channels = "";
-
-    // get audio stream with highest channel count
-    MediaFileAudioStream highestStream = getBestAudioStream();
-    if (highestStream != null) {
-      channels = highestStream.getChannelsAsInt() + "ch";
-    }
-
-    return channels;
   }
 
   /**
