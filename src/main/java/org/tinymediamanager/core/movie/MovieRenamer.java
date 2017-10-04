@@ -61,6 +61,7 @@ import org.tinymediamanager.scraper.util.StrgUtils;
 public class MovieRenamer {
   private static final Logger  LOGGER   = LoggerFactory.getLogger(MovieRenamer.class);
   private static final Pattern ALPHANUM = Pattern.compile(".*?([a-zA-Z0-9]{1}).*$");  // to not use posix
+  private static final Pattern token    = Pattern.compile("(\\$[\\w#]+[\\d+]?)"); // the '#' is for rating
 
   private static void renameSubtitles(Movie m) {
     // build language lists
@@ -985,8 +986,7 @@ public class MovieRenamer {
    * @return the resulting string
    */
   private static String replaceOptionalVariable(String s, Movie movie, boolean forFilename) {
-    Pattern regex = Pattern.compile("(\\$[\\w#][\\d+]?)");
-    Matcher mat = regex.matcher(s);
+    Matcher mat = token.matcher(s);
     if (mat.find()) {
       String rep = createDestination(mat.group(), movie, forFilename);
       if (rep.isEmpty()) {
@@ -1105,6 +1105,27 @@ public class MovieRenamer {
           ret = mf.getAudioCodec(number) + (mf.getAudioCodec(number).isEmpty() ? "" : "-") + mf.getAudioChannels(number);
         }
         break;
+      case "$AL":
+        if (number == null) {
+          ret = mf.getAudioLanguageCode();
+        } else {
+          ret = mf.getAudioLanguageCode(number);
+        }
+        break;
+      case "$AC":
+        if (number == null) {
+          ret = mf.getAudioCodec();
+        } else {
+          ret = mf.getAudioCodec(number);
+        }
+        break;
+      case "$AK":
+        if (number == null) {
+          ret = mf.getAudioChannels();
+        } else {
+          ret = mf.getAudioChannels(number);
+        }
+        break;
       case "$V":
         ret = mf.getVideoCodec() + (mf.getVideoCodec().isEmpty() ? "" : "-") + mf.getVideoFormat();
         break;
@@ -1164,8 +1185,7 @@ public class MovieRenamer {
     String newDestination = template;
 
     // replace all $x parameters
-    Pattern p = Pattern.compile("(\\$[\\w#][\\d+]?)"); // # is for rating
-    Matcher m = p.matcher(template);
+    Matcher m = token.matcher(template);
     while (m.find()) {
       String value = getTokenValue(movie, m.group(1));
       newDestination = replaceToken(newDestination, m.group(1), value);

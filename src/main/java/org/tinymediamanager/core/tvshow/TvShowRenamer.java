@@ -63,7 +63,7 @@ public class TvShowRenamer {
 
   private static final Pattern        epDelimiter    = Pattern.compile("(\\s?(folge|episode|[epx]+)\\s?)?\\$[ED]", Pattern.CASE_INSENSITIVE);
   private static final Pattern        seDelimiter    = Pattern.compile("((staffel|season|s)\\s?)?[\\$][1234]", Pattern.CASE_INSENSITIVE);
-  private static final Pattern        token          = Pattern.compile("(\\$[\\w#])");
+  private static final Pattern        token          = Pattern.compile("(\\$[\\w#]+[\\d+]?)"); // the '#' is for rating
 
   /**
    * add leadingZero if only 1 char
@@ -425,7 +425,7 @@ public class TvShowRenamer {
    * @return the file name for the media file
    */
   public static String generateFilename(TvShow tvShow, MediaFile mf) {
-    return generateName("", tvShow, mf, true);
+    return generateName(SETTINGS.getRenamerFilename(), tvShow, mf, true);
   }
 
   /**
@@ -466,10 +466,17 @@ public class TvShowRenamer {
       return "";
     }
 
+    Pattern regex = Pattern.compile("\\{(.*?)\\}");
+    Matcher mat = regex.matcher(template); &
+    while (mat.find()) {
+      template = template.replace(mat.group(0), replaceOptionalVariable(mat.group(1), tvShow, eps));
+    }
+
     if (StringUtils.isBlank(template)) {
       filename = createDestination(SETTINGS.getRenamerFilename(), tvShow, eps);
     }
     else {
+      LOGGER.debug("BREAK-SHOULD");
       filename = createDestination(template, tvShow, eps);
     }
 
@@ -599,6 +606,12 @@ public class TvShowRenamer {
   public static String generateSeasonDir(String template, TvShowEpisode episode) {
     String seasonDir = template;
 
+    Pattern regex = Pattern.compile("\\{(.*?)\\}");
+    Matcher mat = regex.matcher(seasonDir);
+    while (mat.find()) {
+      seasonDir = seasonDir.replace(mat.group(0), replaceOptionalVariable(mat.group(1), episode.getTvShow(), Arrays.asList(episode)));
+    }
+
     // replace all other tokens
     seasonDir = createDestination(seasonDir, episode.getTvShow(), Arrays.asList(episode));
 
@@ -617,7 +630,7 @@ public class TvShowRenamer {
   public static String generateTvShowDir(String template, TvShow tvShow) {
     String newPathname;
 
-    if (StringUtils.isNotBlank(SETTINGS.getRenamerTvShowFoldername())) {
+    if (StringUtils.isNotBlank(template)) {
       newPathname = tvShow.getDataSource() + File.separator + createDestination(template, tvShow, null);
     }
     else {
@@ -713,6 +726,27 @@ public class TvShowRenamer {
           ret = mf.getAudioCodec() + (mf.getAudioCodec().isEmpty() ? "" : "-") + mf.getAudioChannels();
         } else {
           ret = mf.getAudioCodec(number) + (mf.getAudioCodec(number).isEmpty() ? "" : "-") + mf.getAudioChannels(number);
+        }
+        break;
+      case "$AL":
+        if (number == null) {
+          ret = mf.getAudioLanguageCode();
+        } else {
+          ret = mf.getAudioLanguageCode(number);
+        }
+        break;
+      case "$AC":
+        if (number == null) {
+          ret = mf.getAudioCodec();
+        } else {
+          ret = mf.getAudioCodec(number);
+        }
+        break;
+      case "$AK":
+        if (number == null) {
+          ret = mf.getAudioChannels();
+        } else {
+          ret = mf.getAudioChannels(number);
         }
         break;
       case "$V":
@@ -891,6 +925,35 @@ public class TvShowRenamer {
     newDestination = newDestination.replaceAll("[ \\.]+$", "");
 
     return newDestination.trim();
+  }
+
+  /**
+   * replaces an optional variable, eg "{ Year $Y }"<br>
+   * if we have a year, "Year 2013" will be returned<br>
+   * if $Y replacement was empty, the complete optional tag will be empty.
+   *
+   * @param s
+   *          the string to replace the optional variable for
+   * @param movie
+   *          the movie holding all needed meta data
+   * @param forFilename
+   *          do the logic for file or for folder names?
+   * @return the resulting string
+   */
+  private static String replaceOptionalVariable(String s, TvShow show, List<TvShowEpisode> episodes) {
+    Matcher mat = token.matcher(s);
+    if (mat.find()) {
+      String rep = createDestination(mat.group(), show, episodes);
+      if (rep.isEmpty()) {
+        return "";
+      }
+      else {
+        return s.replace(mat.group(), rep);
+      }
+    }
+    else {
+      return "";
+    }
   }
 
   /**
