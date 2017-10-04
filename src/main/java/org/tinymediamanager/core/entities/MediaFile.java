@@ -893,7 +893,6 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     if (highestStream != null) {
       codec = highestStream.getCodec();
     }
-
     return codec;
   }
 
@@ -905,25 +904,13 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
    */
   public String getAudioCodec(Integer index) {
     String codec = "";
+
     try {
       codec = getAudioStreams().get(index-1).getCodec();
     } catch (IndexOutOfBoundsException e) {
       codec = "";
     }
     return codec;
-  }
-
-  private MediaFileAudioStream getBestAudioStream() {
-    MediaFileAudioStream highestStream = null;
-    for (MediaFileAudioStream stream : audioStreams) {
-      if (highestStream == null) {
-        highestStream = stream;
-      }
-      else if (highestStream.getChannelsAsInt() < stream.getChannelsAsInt()) {
-        highestStream = stream;
-      }
-    }
-    return highestStream;
   }
 
   public String getAudioLanguage() {
@@ -934,8 +921,41 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     if (highestStream != null) {
       language = highestStream.getLanguage();
     }
+    return language;
+  }
+
+  public String getAudioLanguage(Integer index) {
+    String language = "";
+
+    try {
+      language = getAudioStreams().get(index-1).getLanguage();
+    } catch (IndexOutOfBoundsException e) {
+      language = "";
+    }
 
     return language;
+  }
+  public String getAudioLanguageCode() {
+    String language = "";
+
+    // get audio stream with highest channel count
+    MediaFileAudioStream highestStream = getBestAudioStream();
+    if (highestStream != null) {
+      language = highestStream.getLanguage();
+    }
+    return language.toUpperCase(Locale.ROOT);
+  }
+
+  public String getAudioLanguageCode(Integer index) {
+    String language = "";
+
+    try {
+      language = getAudioStreams().get(index-1).getLanguage();
+    } catch (IndexOutOfBoundsException e) {
+      language = "";
+    }
+
+    return language.toUpperCase(Locale.ROOT);
   }
 
   public String getAudioChannels() {
@@ -957,6 +977,19 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
       channels = "";
     }
     return channels;
+  }
+
+  private MediaFileAudioStream getBestAudioStream() {
+    MediaFileAudioStream highestStream = null;
+    for (MediaFileAudioStream stream : audioStreams) {
+      if (highestStream == null) {
+        highestStream = stream;
+      }
+      else if (highestStream.getChannelsAsInt() < stream.getChannelsAsInt()) {
+        highestStream = stream;
+      }
+    }
+    return highestStream;
   }
 
   /**
