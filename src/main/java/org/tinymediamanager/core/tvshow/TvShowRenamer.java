@@ -63,7 +63,7 @@ public class TvShowRenamer {
 
   private static final Pattern        epDelimiter    = Pattern.compile("(\\s?(folge|episode|[epx]+)\\s?)?\\$[ED]", Pattern.CASE_INSENSITIVE);
   private static final Pattern        seDelimiter    = Pattern.compile("((staffel|season|s)\\s?)?[\\$][1234]", Pattern.CASE_INSENSITIVE);
-  private static final Pattern        token          = Pattern.compile("(\\$[\\w#]+[\\d+]?)"); // the '#' is for rating
+  private static final Pattern        token          = Pattern.compile("(\\$[a-zA-Z#]*[\\d]?)\\|?"); // the '#' is for rating, '|' is a optional delimiter
 
   /**
    * add leadingZero if only 1 char
@@ -467,7 +467,7 @@ public class TvShowRenamer {
     }
 
     Pattern regex = Pattern.compile("\\{(.*?)\\}");
-    Matcher mat = regex.matcher(template); &
+    Matcher mat = regex.matcher(template);
     while (mat.find()) {
       template = template.replace(mat.group(0), replaceOptionalVariable(mat.group(1), tvShow, eps));
     }
@@ -476,7 +476,6 @@ public class TvShowRenamer {
       filename = createDestination(SETTINGS.getRenamerFilename(), tvShow, eps);
     }
     else {
-      LOGGER.debug("BREAK-SHOULD");
       filename = createDestination(template, tvShow, eps);
     }
 
@@ -606,12 +605,6 @@ public class TvShowRenamer {
   public static String generateSeasonDir(String template, TvShowEpisode episode) {
     String seasonDir = template;
 
-    Pattern regex = Pattern.compile("\\{(.*?)\\}");
-    Matcher mat = regex.matcher(seasonDir);
-    while (mat.find()) {
-      seasonDir = seasonDir.replace(mat.group(0), replaceOptionalVariable(mat.group(1), episode.getTvShow(), Arrays.asList(episode)));
-    }
-
     // replace all other tokens
     seasonDir = createDestination(seasonDir, episode.getTvShow(), Arrays.asList(episode));
 
@@ -665,11 +658,11 @@ public class TvShowRenamer {
     }
 
     String tok = token.toUpperCase(Locale.ROOT).replaceAll("\\d+","");
-    Integer number = null;
+    Integer num = null;
     try {
-      number = Integer.parseInt(token.toUpperCase(Locale.ROOT).replaceAll("\\D+",""));
+      num = Integer.parseInt(token.toUpperCase(Locale.ROOT).replaceAll("\\D+",""));
     } catch (NumberFormatException e) {
-      number = null;
+      num = null;
     }
 
     switch (tok) {
@@ -686,7 +679,7 @@ public class TvShowRenamer {
 
       // EPISODE
       case "$":
-        switch (number) {
+        switch (num) {
           case 1:
             ret = String.valueOf(episode.getSeason());
             break;
@@ -702,6 +695,7 @@ public class TvShowRenamer {
           default:
             break;
         }
+        break;
       case "$E":
         ret = lz(episode.getEpisode());
         break;
@@ -722,31 +716,31 @@ public class TvShowRenamer {
         ret = mf.getVideoResolution();
         break;
       case "$A":
-        if (number == null) {
+        if (num == null) {
           ret = mf.getAudioCodec() + (mf.getAudioCodec().isEmpty() ? "" : "-") + mf.getAudioChannels();
         } else {
-          ret = mf.getAudioCodec(number) + (mf.getAudioCodec(number).isEmpty() ? "" : "-") + mf.getAudioChannels(number);
+          ret = mf.getAudioCodec(num) + (mf.getAudioCodec(num).isEmpty() ? "" : "-") + mf.getAudioChannels(num);
         }
         break;
       case "$AL":
-        if (number == null) {
+        if (num == null) {
           ret = mf.getAudioLanguageCode();
         } else {
-          ret = mf.getAudioLanguageCode(number);
+          ret = mf.getAudioLanguageCode(num);
         }
         break;
       case "$AC":
-        if (number == null) {
+        if (num == null) {
           ret = mf.getAudioCodec();
         } else {
-          ret = mf.getAudioCodec(number);
+          ret = mf.getAudioCodec(num);
         }
         break;
       case "$AK":
-        if (number == null) {
+        if (num == null) {
           ret = mf.getAudioChannels();
         } else {
-          ret = mf.getAudioChannels(number);
+          ret = mf.getAudioChannels(num);
         }
         break;
       case "$V":
@@ -758,6 +752,7 @@ public class TvShowRenamer {
       default:
         break;
     }
+    LOGGER.debug("replaced '" + tok + "/" + num + "' with '" + ret + "'");
     return ret;
   }
 

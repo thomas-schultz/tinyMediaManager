@@ -61,7 +61,7 @@ import org.tinymediamanager.scraper.util.StrgUtils;
 public class MovieRenamer {
   private static final Logger  LOGGER   = LoggerFactory.getLogger(MovieRenamer.class);
   private static final Pattern ALPHANUM = Pattern.compile(".*?([a-zA-Z0-9]{1}).*$");  // to not use posix
-  private static final Pattern token    = Pattern.compile("(\\$[\\w#]+[\\d+]?)"); // the '#' is for rating
+  private static final Pattern token    = Pattern.compile("(\\$[a-zA-Z#]*[\\d]?)\\|?"); // the '#' is for rating, '|' is a optional delimiter
 
   private static void renameSubtitles(Movie m) {
     // build language lists
