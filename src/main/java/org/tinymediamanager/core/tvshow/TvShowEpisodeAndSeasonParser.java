@@ -37,7 +37,7 @@ import org.tinymediamanager.scraper.util.ParserUtils;
 
 /**
  * The Class TvShowEpisodeAndSeasonParser.
- * 
+ *
  * @author Manuel Laggner
  */
 public class TvShowEpisodeAndSeasonParser {
@@ -72,7 +72,7 @@ public class TvShowEpisodeAndSeasonParser {
   private static Pattern      episodePattern2       = Pattern.compile("episode[\\. _-]*(\\d{1,2})", Pattern.CASE_INSENSITIVE);
   private static Pattern      romanPattern          = Pattern.compile("(part|pt)[\\._\\s]+([MDCLXVI]+)", Pattern.CASE_INSENSITIVE);
   private static Pattern      seasonPattern         = Pattern.compile("(staffel|season|series)[\\s_.-]*(\\d{1,4})", Pattern.CASE_INSENSITIVE);
-  private static Pattern      seasonMultiEP         = Pattern.compile("s(\\d{1,4})((?:([epx_.-]+\\d{1,3})+))", Pattern.CASE_INSENSITIVE);
+  private static Pattern      seasonMultiEP         = Pattern.compile("s(\\d{1,4})((?:([epx_.+-]+\\d{1,3})+))", Pattern.CASE_INSENSITIVE);
   private static Pattern      seasonMultiEP2        = Pattern.compile("(\\d{1,4})(?=x)((?:([epx]+\\d{1,3})+))", Pattern.CASE_INSENSITIVE);
   private static Pattern      numbers2Pattern       = Pattern.compile(".*?([0-9]{2}).*", Pattern.CASE_INSENSITIVE);
   private static Pattern      numbers3Pattern       = Pattern.compile(".*?([0-9])([0-9]{2}).*", Pattern.CASE_INSENSITIVE);
@@ -80,9 +80,9 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Detect episode from filename.
-   * 
+   *
    * @deprecated
-   * 
+   *
    * @param file
    *          the file
    * @return the episode matching result
@@ -168,7 +168,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Does all the season/episode detection
-   * 
+   *
    * @param name
    *          the RELATIVE filename (like /dir2/seas1/fname.ext) from the TvShowRoot
    * @param showname
@@ -194,7 +194,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Does all the season/episode detection
-   * 
+   *
    * @param name
    *          the RELATIVE filename (like /dir2/seas1/fname.ext) from the TvShowRoot
    * @param showname
@@ -238,13 +238,14 @@ public class TvShowEpisodeAndSeasonParser {
       basename = basename.replaceAll("(?i)^" + Pattern.quote(showname) + "", "");
       basename = basename.replaceAll("(?i) " + Pattern.quote(showname) + " ", "");
     }
+
     basename = basename.replaceFirst("\\.\\w{1,4}$", ""); // remove extension if 1-4 chars
     basename = basename.replaceFirst("[\\(\\[]\\d{4}[\\)\\]]", ""); // remove (xxxx) or [xxxx] as year
 
     basename = basename + " ";
 
     result.stackingMarkerFound = !Utils.getStackingMarker(filename).isEmpty() ? true : false;
-    result.name = basename.trim();
+    result.name = cleanEpisodeTitle(basename.trim(), showname);
 
     // season detection
     if (result.season == -1) {
@@ -490,7 +491,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Detect episode from directory.
-   * 
+   *
    * @param directory
    *          the directory
    * @param rootDirOfTvShow
@@ -524,7 +525,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Parses the string.
-   * 
+   *
    * @param stringToParse
    *          the string to parse
    * @return the episode matching result
@@ -564,7 +565,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Combine results.
-   * 
+   *
    * @param result
    *          the result
    * @param resultFromParser
@@ -593,7 +594,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Parses the.
-   * 
+   *
    * @param searchString
    *          the search string
    * @param pattern
@@ -656,7 +657,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Detect season.
-   * 
+   *
    * @param relativePath
    *          the relative path
    * @return the int
@@ -683,7 +684,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Decode single roman.
-   * 
+   *
    * @param letter
    *          the letter
    * @return the int
@@ -711,7 +712,7 @@ public class TvShowEpisodeAndSeasonParser {
 
   /**
    * Decode roman.
-   * 
+   *
    * @param roman
    *          the roman
    * @return the int
