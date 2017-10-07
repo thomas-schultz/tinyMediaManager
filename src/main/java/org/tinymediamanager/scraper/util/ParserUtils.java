@@ -36,7 +36,7 @@ import org.w3c.tidy.Tidy;
 
 /**
  * Various parses methods to get a clean and workable name out of weird filenames
- * 
+ *
  * @author Myron Boyle
  */
 public class ParserUtils {
@@ -64,7 +64,7 @@ public class ParserUtils {
    * 4. everything before the first stopword must be the movie name :p<br>
    * <br>
    * Deprecated in favor of detectCleanMovienameAndYear (avoid possible dupes)
-   * 
+   *
    * @param filename
    *          the filename to get the title from
    * @return the (hopefully) correct parsed movie name
@@ -80,7 +80,7 @@ public class ParserUtils {
    * 2. searches for first occurrence of common stopwords<br>
    * 3. if last token is 4 digits, assume year and set [1]<br>
    * 4. everything before the first stopword must be the movie name :p
-   * 
+   *
    * @param filename
    *          the filename to get the title from
    * @return title/year string (year can be empty)
@@ -192,7 +192,7 @@ public class ParserUtils {
    * 2. searches for first occurrence of common stopwords<br>
    * 3. if last token is 4 digits, assume year and set [1]<br>
    * 4. everything before the first stopword must be the movie name :p
-   * 
+   *
    * @param filename
    *          the filename to get the title from
    * @return title/year string (year can be empty)
@@ -328,7 +328,7 @@ public class ParserUtils {
 
   /**
    * gets IMDB id out of filename
-   * 
+   *
    * @param text
    *          a string
    * @return imdbid or empty
@@ -349,7 +349,7 @@ public class ParserUtils {
 
   /**
    * removes some weird number-stopwords like 1080, 720 etc.. to ease the regex parsing for season/episode
-   * 
+   *
    * @param filename
    *          the file name to remove the stop- and bad words for
    * @return the cleaned one
@@ -359,6 +359,9 @@ public class ParserUtils {
 
     // replaces any resolution 1234x1234 (must start with a non-word (else too global)
     filename = filename.replaceFirst("(?i)\\W\\d{3,4}x\\d{3,4}", " ");
+
+    // replaces Audio-Video Filetags like "(ENG-1080p)" or "(DE-EN-720p)"
+    filename = filename.replaceAll("([A-Z]{2,3}-)*([0-9]*(p|i))", "");
 
     for (String s : stopwords) {
       filename = filename.replaceAll("(?i)\\W" + s + "(\\W|$)", " "); // TV stop words must start AND END with a non-word (else too global) or line
@@ -382,9 +385,9 @@ public class ParserUtils {
 
   /**
    * return a 2 element array. 0 = title; 1=date
-   * 
+   *
    * parses the title in the format Title YEAR or Title (YEAR)
-   * 
+   *
    * @param title
    *          the title
    * @return the string[]
@@ -409,7 +412,7 @@ public class ParserUtils {
   /**
    * Parses titles if they are in the form Title (Year). The first element is the title, and the second element is the date, both can be null. If the
    * matcher fails to find the pattern, then the passed in title is set as the first element, which is the title.
-   * 
+   *
    * @param title
    *          the title
    * @return the pair
@@ -429,7 +432,7 @@ public class ParserUtils {
 
   /**
    * Try to clean the NFO(XML) content with JTidy.
-   * 
+   *
    * @param sourceNfoContent
    *          the XML content to be cleaned
    * @return the cleaned XML content (or the source, if any Exceptions occur)
@@ -460,7 +463,7 @@ public class ParserUtils {
 
   /**
    * for all strings, return the "cleanest" one detected by rateCleanness()
-   * 
+   *
    * @param names
    *          strings
    * @return cleanest one
@@ -487,7 +490,7 @@ public class ParserUtils {
   /**
    * returns a count how "clean" a string is<br>
    * CamelCase name with space as delimiter should get a higher value...<br>
-   * 
+   *
    * @param info
    *          the info to rate
    * @return number, the higher, the better
