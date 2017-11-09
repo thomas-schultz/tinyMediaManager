@@ -55,7 +55,7 @@ import org.tinymediamanager.scraper.util.StrgUtils;
 
 /**
  * The Class MovieRenamer.
- * 
+ *
  * @author Manuel Laggner / Myron Boyle
  */
 public class MovieRenamer {
@@ -182,7 +182,7 @@ public class MovieRenamer {
 
   /**
    * Rename movie.
-   * 
+   *
    * @param movie
    *          the movie
    */
@@ -590,7 +590,7 @@ public class MovieRenamer {
 
   /**
    * generates renamed filename(s) per MF
-   * 
+   *
    * @param movie
    *          the movie (for datasource, path)
    * @param mf
@@ -915,7 +915,7 @@ public class MovieRenamer {
 
   /**
    * returns "delimiter + stackingString" for use in filename
-   * 
+   *
    * @param mf
    *          a mediaFile
    * @return eg ".CD1" dependent of settings
@@ -936,7 +936,7 @@ public class MovieRenamer {
 
   /**
    * Creates the new filename according to template string
-   * 
+   *
    * @param template
    *          the template
    * @param movie
@@ -955,7 +955,7 @@ public class MovieRenamer {
 
   /**
    * Creates the new filename according to template string
-   * 
+   *
    * @param template
    *          the template
    * @param movie
@@ -976,7 +976,7 @@ public class MovieRenamer {
    * replaces an optional variable, eg "{ Year $Y }"<br>
    * if we have a year, "Year 2013" will be returned<br>
    * if $Y replacement was empty, the complete optional tag will be empty.
-   * 
+   *
    * @param s
    *          the string to replace the optional variable for
    * @param movie
@@ -1003,7 +1003,7 @@ public class MovieRenamer {
 
   /**
    * gets the token value ($x) from specified movie object
-   * 
+   *
    * @param movie
    *          our movie
    * @param token
@@ -1018,11 +1018,11 @@ public class MovieRenamer {
     }
 
     String tok = token.toUpperCase(Locale.ROOT).replaceAll("\\d+","");
-    Integer number = null;
+    Integer number = 0;
     try {
       number = Integer.parseInt(token.toUpperCase(Locale.ROOT).replaceAll("\\D+",""));
     } catch (NumberFormatException e) {
-      number = null;
+      number = 0;
     }
 
     switch (tok) {
@@ -1155,7 +1155,7 @@ public class MovieRenamer {
 
   /**
    * gets the first alpha-numeric character
-   * 
+   *
    * @param text
    * @return A-Z0-9 or empty
    */
@@ -1171,7 +1171,7 @@ public class MovieRenamer {
 
   /**
    * Creates the new file/folder name according to template string
-   * 
+   *
    * @param template
    *          the template
    * @param movie
@@ -1263,7 +1263,7 @@ public class MovieRenamer {
   /**
    * replaces all invalid/illegal characters for filenames with ""<br>
    * except the colon, which will be changed to a dash
-   * 
+   *
    * @param source
    *          string to clean
    * @return cleaned string
@@ -1276,7 +1276,7 @@ public class MovieRenamer {
 
   /**
    * MOVIES file.
-   * 
+   *
    * @param oldFilename
    *          the old filename
    * @param newFilename
@@ -1308,7 +1308,7 @@ public class MovieRenamer {
 
   /**
    * copies file.
-   * 
+   *
    * @param oldFilename
    *          the old filename
    * @param newFilename
@@ -1343,7 +1343,7 @@ public class MovieRenamer {
   /**
    * Check if the folder rename pattern is unique<br>
    * Unique true, when having at least a $T/$E-$Y combo or $I imdbId<br>
-   * 
+   *
    * @param pattern
    *          the pattern to check the uniqueness for
    * @return true/false
@@ -1359,7 +1359,7 @@ public class MovieRenamer {
    * Check if the FILE rename pattern is valid<br>
    * What means, pattern has at least title set ($T|$E|$O)<br>
    * "empty" is considered as invalid - so not renaming files
-   * 
+   *
    * @return true/false
    */
   public static boolean isFilePatternValid() {

@@ -49,7 +49,7 @@ import org.tinymediamanager.scraper.util.StrgUtils;
 
 /**
  * The TvShow renamer Works on per MediaFile basis
- * 
+ *
  * @author Myron Boyle
  */
 public class TvShowRenamer {
@@ -67,7 +67,7 @@ public class TvShowRenamer {
 
   /**
    * add leadingZero if only 1 char
-   * 
+   *
    * @param num
    *          the number
    * @return the string with a leading 0
@@ -78,7 +78,7 @@ public class TvShowRenamer {
 
   /**
    * renames the TvSHow root folder and updates all mediaFiles
-   * 
+   *
    * @param show
    *          the show
    */
@@ -123,7 +123,7 @@ public class TvShowRenamer {
 
   /**
    * Rename Episode (PLUS all Episodes having the same MediaFile!!!).
-   * 
+   *
    * @param episode
    *          the Episode
    */
@@ -250,7 +250,7 @@ public class TvShowRenamer {
   /**
    * Renames a MediaFiles<br>
    * gets all episodes of it, creates season folder, updates MFs & DB
-   * 
+   *
    * @param mf
    *          the MediaFile
    * @param show
@@ -417,7 +417,7 @@ public class TvShowRenamer {
 
   /**
    * generates the filename of a TvShow MediaFile according to settings <b>(without path)</b>
-   * 
+   *
    * @param tvShow
    *          the tvShow
    * @param mf
@@ -430,7 +430,7 @@ public class TvShowRenamer {
 
   /**
    * generates the filename of a TvShow MediaFile according to settings <b>(without path)</b>
-   * 
+   *
    * @param template
    *          the renaming template
    * @param tvShow
@@ -446,7 +446,7 @@ public class TvShowRenamer {
   /**
    * generates the foldername of a TvShow MediaFile according to settings <b>(without path)</b><br>
    * Mainly for DISC files
-   * 
+   *
    * @param tvShow
    *          the tvShow
    * @param mf
@@ -635,7 +635,7 @@ public class TvShowRenamer {
 
   /**
    * gets the token value ($x) from specified object
-   * 
+   *
    * @param show
    *          our show
    * @param episode
@@ -658,11 +658,11 @@ public class TvShowRenamer {
     }
 
     String tok = token.toUpperCase(Locale.ROOT).replaceAll("\\d+","");
-    Integer num = null;
+    Integer num = 0;
     try {
       num = Integer.parseInt(token.toUpperCase(Locale.ROOT).replaceAll("\\D+",""));
     } catch (NumberFormatException e) {
-      num = null;
+      num = 0;
     }
 
     switch (tok) {
@@ -758,7 +758,7 @@ public class TvShowRenamer {
 
   /**
    * Creates the new file/folder name according to template string
-   * 
+   *
    * @param template
    *          the template
    * @param show
@@ -954,7 +954,7 @@ public class TvShowRenamer {
   /**
    * checks, if the pattern has a recommended structure (S/E numbers, title filled)<br>
    * when false, it might lead to some unpredictable renamings...
-   * 
+   *
    * @param seasonPattern
    *          the season pattern
    * @param filePattern
@@ -996,7 +996,7 @@ public class TvShowRenamer {
 
   /**
    * Count the amount of renamer tokens per group
-   * 
+   *
    * @param pattern
    *          the pattern to analyze
    * @param possibleValues
@@ -1015,7 +1015,7 @@ public class TvShowRenamer {
 
   /**
    * Returns first position of any matched patterns
-   * 
+   *
    * @param pattern
    *          the pattern to get the position for
    * @param possibleValues
@@ -1045,7 +1045,7 @@ public class TvShowRenamer {
   /**
    * replaces all invalid/illegal characters for filenames with ""<br>
    * except the colon, which will be changed to a dash
-   * 
+   *
    * @param source
    *          string to clean
    * @return cleaned string
