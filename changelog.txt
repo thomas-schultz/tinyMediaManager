@@ -1,10 +1,46 @@
+Version 2.9.8
+=======================
+x fix IMDB language and release date parsing
+x fix parsing audio channel information 
+x fix naming detection for 4k files
+
+
+Version 2.9.7
+=======================
++ added DataTables export template - thx to @C. Janke
+x fixed the imdb scraper (imdb changed their web pages) - thx to @Grizzler89
+x fixed a parsing problem in the Kodi scraper
+x fixed movie renamer with animated posters
+
+Version 2.9.6
+=======================
++ add persian language
++ added option to include external audio files in Kodi NFO streamdetails (thx @midgetspy)  
++ support for mediainfo 17.10+ XMLs
++ updated mediainfo to 17.10
+x fixed java 9 compatibility issues
+x fix parsing MediaInfo for .ISO files (endless hanging sometimes)
+x reduced log output on the console for the command line version
+x fix animated pictures scraper; did not work on automatic scrape
+x fix AniDB scrape (too much results)
+x fix country tags in NFO (now multiple)
+x change episodeguide url in TvShow NFOs
+x cleaning of orphaned episodes in the database
+x storing of episodes in special seasons (season 0) no more switches to season -1
+x fix occassional crashes when writing objects to the database
+x fix audio codes parsing of audio files (thx @midgetspy)
+x fix renaming of movies with renamer token $2 and starting with umlauts
+
 Version 2.9.5
 =======================
++ added some more (common) languages to the available scraper languages
 x adapt IMDB site changes; getting plot works again
 x fix fanart.tv scraping (thread crash)
 x fix TMDB actor naming scrape
 x fix ANIDB scraper (no episode/season fetched)
 x fix Kodi scraper
+x fix of the bug report dialog (saving log files and layout)
+x some minor fixes
 
 
 Version 2.9.4
@@ -48,6 +84,7 @@ x fixed detection of certain audio streams with mediainfo #173 (thx @ProIcons)
 x fixed the year field in the editors: now you can set the year to zero
 x better handling of network interruptions in the artwork downloader
 x fixed default window size of the bug report dialog #184 (thx @ProIcons)
+
 
 Version 2.9.3
 =======================

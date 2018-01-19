@@ -19,8 +19,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,9 +36,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -147,6 +142,8 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
   private int                                        overallBitRate       = 0;
   @JsonProperty
   private int                                        bitDepth             = 0;
+  @JsonProperty
+  private double                                     frameRate            = 0.0d;
   @JsonProperty
   private int                                        durationInSecs       = 0;
   @JsonProperty
@@ -505,11 +502,11 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
    * @return true/false
    */
   public boolean isDiscFile() {
-    return isBlurayFile() || isDVDFile();
+    return isBlurayFile() || isDVDFile() || isHdDVDFile();
   }
 
   /**
-   * is this a BLURAY "disc file"? (video_ts, vts...) for movierenamer
+   * is this a DVD "disc file"? (video_ts, vts...) for movierenamer
    * 
    * @return true/false
    */
@@ -519,13 +516,24 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
   }
 
   /**
-   * is this a DVD "disc file"? (index, movieobject, bdmv, ...) for movierenamer
+   * is this a Bluray "disc file"? (index, movieobject, bdmv, ...) for movierenamer
    * 
    * @return true/false
    */
   public boolean isBlurayFile() {
     String name = getFilename().toLowerCase(Locale.ROOT);
     return name.matches("(index\\.bdmv|movieobject\\.bdmv|\\d{5}\\.m2ts)");
+  }
+
+  /**
+   * is this a HD-DVD "disc file"? (hvdvd_ts, hv...) for movierenamer
+   * 
+   * @return true/false
+   */
+  public boolean isHdDVDFile() {
+    String name = getFilename().toLowerCase(Locale.ROOT);
+    String foldername = FilenameUtils.getBaseName(getPath()).toLowerCase(Locale.ROOT);
+    return "hvdvd_ts".equals(foldername) && name.matches(".*(evo|bup|ifo|map)$");
   }
 
   @Deprecated
@@ -1284,6 +1292,16 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     firePropertyChange("bitRateInKbps", oldValue, newValue);
   }
 
+  public double getFrameRate() {
+    return frameRate;
+  }
+
+  public void setFrameRate(double frameRate) {
+    double oldValue = this.frameRate;
+    this.frameRate = frameRate;
+    firePropertyChange("frameRate", oldValue, frameRate);
+  }
+
   /**
    * Gets the bite rate in kbps.
    * 
@@ -1491,7 +1509,7 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
 
   private int parseToInt(String str) {
     try {
-      return Integer.parseInt(str);
+      return Integer.parseInt(str.trim());
     }
     catch (Exception ignored) {
       return 0;
@@ -1504,20 +1522,13 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     if (Files.exists(xmlFile)) {
       try {
         LOGGER.info("ISO: try to parse " + xmlFile);
-
-        JAXBContext context = JAXBContext.newInstance(MediaInfoXMLParser.class);
-        Unmarshaller um = context.createUnmarshaller();
-        MediaInfoXMLParser xml = new MediaInfoXMLParser();
-
-        Reader in = Files.newBufferedReader(xmlFile, StandardCharsets.UTF_8);
-        xml = (MediaInfoXMLParser) um.unmarshal(in);
-        in.close();
-        xml.snapshot();
+        MediaInfoXMLParser xml = MediaInfoXMLParser.parseXML(xmlFile);
 
         // get snapshot from biggest file
-        setMiSnapshot(xml.getBiggestFile().snapshot);
-        setDuration(xml.getDuration()); // accumulated duration
-        return xml.getFilesize();
+        MediaInfoXMLParser.MiFile mainFile = xml.getMainFile();
+        setMiSnapshot(mainFile.snapshot);
+        setDuration(mainFile.getDuration()); // accumulated duration
+        return 0;
       }
       catch (Exception e) {
         LOGGER.warn("ISO: Unable to parse " + xmlFile, e);
@@ -1559,8 +1570,12 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
               long pos = 0L;
               // The parsing loop
               do {
+                // limit read to maxBuffer, or to end of file size (cannot determine file end in stream!!)
+                Long toread = pos + BUFFER_SIZE > entry.getSize() ? entry.getSize() - pos : BUFFER_SIZE;
+                // LOGGER.trace("ISO: reading " + toread);
+
                 // Reading data somewhere, do what you want for this.
-                From_Buffer_Size = image.readBytes(entry, pos, From_Buffer, 0, BUFFER_SIZE);
+                From_Buffer_Size = image.readBytes(entry, pos, From_Buffer, 0, toread.intValue());
                 if (From_Buffer_Size > 0) {
                   pos += From_Buffer_Size; // add bytes read to file position
 
@@ -1757,6 +1772,13 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
         catch (Exception ignored) {
         }
 
+        try {
+          String fr = getMediaInfo(StreamKind.Video, 0, "FrameRate");
+          setFrameRate(Double.parseDouble(fr));
+        }
+        catch (Exception ignored) {
+        }
+
         // *****************
         // get audio streams
         // *****************
@@ -1785,34 +1807,7 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
         audioStreams.clear();
         for (int i = 0; i < streams; i++) {
           MediaFileAudioStream stream = new MediaFileAudioStream();
-          String audioCodec = getMediaInfo(StreamKind.Audio, i, "CodecID/Hint", "Format");
-          audioCodec = audioCodec.replaceAll("\\p{Punct}", "");
-          if (audioCodec.toLowerCase(Locale.ROOT).contains("truehd")) {
-            // <Format>TrueHD / AC-3</Format>
-            audioCodec = "TrueHD";
-          }
-
-          String audioAddition = getMediaInfo(StreamKind.Audio, i, "Format_Profile");
-          if ("dts".equalsIgnoreCase(audioCodec) && StringUtils.isNotBlank(audioAddition)) {
-            // <Format_Profile>X / MA / Core</Format_Profile>
-            if (audioAddition.contains("ES")) {
-              audioCodec = "DTSHD-ES";
-            }
-            if (audioAddition.contains("HRA")) {
-              audioCodec = "DTSHD-HRA";
-            }
-            if (audioAddition.contains("MA")) {
-              audioCodec = "DTSHD-MA";
-            }
-            if (audioAddition.contains("X")) {
-              audioCodec = "DTS-X";
-            }
-          }
-          if ("TrueHD".equalsIgnoreCase(audioCodec) && StringUtils.isNotBlank(audioAddition)) {
-            if (audioAddition.contains("Atmos")) {
-              audioCodec = "Atmos";
-            }
-          }
+          String audioCodec = this.getAudioCodecFromStream(i);
           stream.setCodec(audioCodec);
 
           // AAC sometimes codes channels into Channel(s)_Original
@@ -1916,7 +1911,7 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
 
       case AUDIO:
         MediaFileAudioStream stream = new MediaFileAudioStream();
-        String audioCodec = getMediaInfo(StreamKind.Audio, 0, "CodecID/Hint", "Format");
+        String audioCodec = this.getAudioCodecFromStream(0);
         stream.setCodec(audioCodec.replaceAll("\\p{Punct}", ""));
         String channels = getMediaInfo(StreamKind.Audio, 0, "Channel(s)");
         stream.setChannels(StringUtils.isEmpty(channels) ? "" : channels + "ch");
@@ -1936,6 +1931,13 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
           else {
             stream.setBitrate(Integer.parseInt(br) / 1000);
           }
+        }
+        catch (Exception ignored) {
+        }
+
+        try {
+          String fr = getMediaInfo(StreamKind.Video, 0, "FrameRate");
+          setFrameRate(Double.parseDouble(fr));
         }
         catch (Exception ignored) {
         }
@@ -2022,20 +2024,10 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
 
     // video dimension
     if (!width.isEmpty()) {
-      try {
-        setVideoWidth(Integer.parseInt(width));
-      }
-      catch (NumberFormatException e) {
-        setVideoWidth(0);
-      }
+      setVideoWidth(parseToInt(width));
     }
     if (!height.isEmpty()) {
-      try {
-        setVideoHeight(Integer.parseInt(height));
-      }
-      catch (NumberFormatException e) {
-        setVideoHeight(0);
-      }
+      setVideoHeight(parseToInt(height));
     }
 
     switch (type) {
@@ -2096,6 +2088,39 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     // close mediainfo lib
     closeMediaInfo();
     LOGGER.trace("closed MI");
+  }
+
+  private String getAudioCodecFromStream(int streamNum) {
+    String audioCodec = getMediaInfo(StreamKind.Audio, streamNum, "CodecID/Hint", "Format");
+    audioCodec = audioCodec.replaceAll("\\p{Punct}", "");
+    if (audioCodec.toLowerCase(Locale.ROOT).contains("truehd")) {
+      // <Format>TrueHD / AC-3</Format>
+      audioCodec = "TrueHD";
+    }
+
+    String audioAddition = getMediaInfo(StreamKind.Audio, streamNum, "Format_Profile");
+    if ("dts".equalsIgnoreCase(audioCodec) && StringUtils.isNotBlank(audioAddition)) {
+      // <Format_Profile>X / MA / Core</Format_Profile>
+      if (audioAddition.contains("ES")) {
+        audioCodec = "DTSHD-ES";
+      }
+      if (audioAddition.contains("HRA")) {
+        audioCodec = "DTSHD-HRA";
+      }
+      if (audioAddition.contains("MA")) {
+        audioCodec = "DTSHD-MA";
+      }
+      if (audioAddition.contains("X")) {
+        audioCodec = "DTS-X";
+      }
+    }
+    if ("TrueHD".equalsIgnoreCase(audioCodec) && StringUtils.isNotBlank(audioAddition)) {
+      if (audioAddition.contains("Atmos")) {
+        audioCodec = "Atmos";
+      }
+    }
+
+    return audioCodec;
   }
 
   private String parseLanguageFromString(String shortname) {

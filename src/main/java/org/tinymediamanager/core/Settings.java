@@ -550,6 +550,7 @@ public class Settings extends AbstractModelObject {
     addVideoFileTypes(".dv");
     addVideoFileTypes(".dvr-ms");
     addVideoFileTypes(".disc"); // video stubs
+    addVideoFileTypes(".evo"); // hddvd
     addVideoFileTypes(".fli");
     addVideoFileTypes(".flv");
     addVideoFileTypes(".h264");
@@ -607,6 +608,7 @@ public class Settings extends AbstractModelObject {
     addAudioFileTypes(".mka");
     addAudioFileTypes(".mp3");
     addAudioFileTypes(".mpa");
+    addAudioFileTypes(".mlp");
     addAudioFileTypes(".oga");
     addAudioFileTypes(".ogg");
     addAudioFileTypes(".pcm");
@@ -614,6 +616,7 @@ public class Settings extends AbstractModelObject {
     addAudioFileTypes(".ram");
     addAudioFileTypes(".rm");
     addAudioFileTypes(".tta");
+    addAudioFileTypes(".thd");
     addAudioFileTypes(".wav");
     addAudioFileTypes(".wave");
     addAudioFileTypes(".wma");
@@ -670,8 +673,10 @@ public class Settings extends AbstractModelObject {
     movieSettings.addMovieNfoFilename(MovieNfoNaming.MOVIE_NFO);
     movieSettings.addMoviePosterFilename(MoviePosterNaming.POSTER_JPG);
     movieSettings.addMoviePosterFilename(MoviePosterNaming.POSTER_PNG);
+    movieSettings.addMoviePosterFilename(MoviePosterNaming.POSTER_JPG);
     movieSettings.addMovieFanartFilename(MovieFanartNaming.FANART_JPG);
     movieSettings.addMovieFanartFilename(MovieFanartNaming.FANART_PNG);
+    movieSettings.addMovieFanartFilename(MovieFanartNaming.FANART_JPG);
 
     // activate default scrapers
     for (MediaScraper ms : MediaScraper.getMediaScrapers(ScraperType.MOVIE_ARTWORK)) {

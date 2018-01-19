@@ -97,6 +97,7 @@ public class MovieSettingsPanel extends ScrollablePanel {
   private JCheckBox                            chckbxNfo;
   private JCheckBox                            chckbxMetadata;
   private JCheckBox                            chckbxRuntimeFromMf;
+  private JCheckBox                            chckbxIncludeExternalAudioStreams;
   private JCheckBox                            chckbxTraktTv;
   private JCheckBox                            chckbxWatched;
   private JCheckBox                            chckbxRating;
@@ -124,11 +125,19 @@ public class MovieSettingsPanel extends ScrollablePanel {
             FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
             FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"),
             FormSpecs.RELATED_GAP_COLSPEC, },
-        new RowSpec[] { FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.UNRELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, }));
+        new RowSpec[] {
+                FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.UNRELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC,
+        }));
 
     JLabel lblVisiblecolumns = new JLabel(BUNDLE.getString("Settings.movie.visiblecolumns")); //$NON-NLS-1$
     panelGeneral.add(lblVisiblecolumns, "2, 2, right, default");
@@ -182,20 +191,26 @@ public class MovieSettingsPanel extends ScrollablePanel {
     chckbxRuntimeFromMf = new JCheckBox("");
     panelGeneral.add(chckbxRuntimeFromMf, "4, 12");
 
+    JLabel lblIncludeExternalAudioStreams = new JLabel(BUNDLE.getString("Settings.includeexternalstreamsinnfo"));
+    panelGeneral.add(lblIncludeExternalAudioStreams, "2, 14, right, default");
+
+    chckbxIncludeExternalAudioStreams = new JCheckBox("");
+    panelGeneral.add(chckbxIncludeExternalAudioStreams, "4, 14");
+
     JSeparator separator = new JSeparator();
-    panelGeneral.add(separator, "2, 14, 11, 1");
+    panelGeneral.add(separator, "2, 16, 11, 1");
 
     final JLabel lblAutomaticRename = new JLabel(BUNDLE.getString("Settings.movie.automaticrename")); //$NON-NLS-1$
-    panelGeneral.add(lblAutomaticRename, "2, 16, right, default");
+    panelGeneral.add(lblAutomaticRename, "2, 18, right, default");
 
     chckbxRename = new JCheckBox(BUNDLE.getString("Settings.movie.automaticrename.desc")); //$NON-NLS-1$
-    panelGeneral.add(chckbxRename, "4, 16, 7, 1");
+    panelGeneral.add(chckbxRename, "4, 18, 7, 1");
 
     JLabel lblTraktTv = new JLabel(BUNDLE.getString("Settings.trakt"));//$NON-NLS-1$
-    panelGeneral.add(lblTraktTv, "2, 18");
+    panelGeneral.add(lblTraktTv, "2, 20");
 
     chckbxTraktTv = new JCheckBox("");
-    panelGeneral.add(chckbxTraktTv, "4, 18");
+    panelGeneral.add(chckbxTraktTv, "4, 20");
 
     JButton btnClearTraktTvMovies = new JButton(BUNDLE.getString("Settings.trakt.clearmovies"));//$NON-NLS-1$
     btnClearTraktTvMovies.addActionListener(new ActionListener() {
@@ -540,8 +555,13 @@ public class MovieSettingsPanel extends ScrollablePanel {
     //
     BeanProperty<MovieSettings, Boolean> settingsBeanProperty_8 = BeanProperty.create("runtimeFromMediaInfo");
     AutoBinding<MovieSettings, Boolean, JCheckBox, Boolean> autoBinding_6 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, settings,
-        settingsBeanProperty_8, chckbxRuntimeFromMf, jCheckBoxBeanProperty);
+            settingsBeanProperty_8, chckbxRuntimeFromMf, jCheckBoxBeanProperty);
     autoBinding_6.bind();
+    //
+    BeanProperty<MovieSettings, Boolean> settingsBeanProperty_8a = BeanProperty.create("includeExternalAudioStreams");
+    AutoBinding<MovieSettings, Boolean, JCheckBox, Boolean> autoBinding_6a = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, settings,
+            settingsBeanProperty_8a, chckbxIncludeExternalAudioStreams, jCheckBoxBeanProperty);
+    autoBinding_6a.bind();
     //
     BeanProperty<MovieSettings, Boolean> settingsBeanProperty_9 = BeanProperty.create("yearColumnVisible");
     AutoBinding<MovieSettings, Boolean, JCheckBox, Boolean> autoBinding_7 = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, settings,

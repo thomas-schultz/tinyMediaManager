@@ -93,7 +93,7 @@ public class ActorImageLabel extends ImageLabel {
     if (isShowing() && scaledImage == null && this.actor != null) {
       // load actors async
       if (actorWorker != null && !actorWorker.isDone()) {
-        actorWorker.cancel(true);
+        actorWorker.cancel(false);
       }
 
       // load image in separate worker -> performance

@@ -40,7 +40,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/scraper-imdb"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/scraper-moviemeter"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/scraper-ofdb"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/scraper-rottentomatoes"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/scraper-tvdb"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/scraper-zelluloid"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/scraper-kodi"/>

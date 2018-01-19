@@ -21,6 +21,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -1161,7 +1162,7 @@ public class MovieRenamer {
    */
   protected static String getFirstAlphaNum(String text) {
     if (StringUtils.isNotBlank(text)) {
-      Matcher m = ALPHANUM.matcher(text);
+      Matcher m = ALPHANUM.matcher(Normalizer.normalize(text, java.text.Normalizer.Form.NFD));
       if (m.find()) {
         return m.group(1).toUpperCase(Locale.ROOT);
       }

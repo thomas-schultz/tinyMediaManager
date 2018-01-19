@@ -23,19 +23,38 @@ package org.tinymediamanager.core.movie;
 public enum MovieFanartNaming {
 
   /** [filename]-fanart.png */
-  FILENAME_FANART_PNG, /** [filename]-fanart.jpg */
-  FILENAME_FANART_JPG, /** [filename].fanart.png */
-  FILENAME_FANART2_PNG, /** [filename].fanart.jpg */
-  FILENAME_FANART2_JPG, /** [filename]-fanart.tbn */
-  @Deprecated FILENAME_FANART_TBN,
+  FILENAME_FANART_PNG,
+  /** [filename]-fanart.jpg */
+  FILENAME_FANART_JPG,
+  /** [filename].fanart.gif */
+  FILENAME_FANART_GIF,
+  /** [filename].fanart.png */
+  FILENAME_FANART2_PNG,
+  /** [filename].fanart.jpg */
+  FILENAME_FANART2_JPG,
+  /** [filename]-fanart.gif */
+  FILENAME_FANART2_GIF,
+  /** [filename]-fanart.tbn */
+  @Deprecated
+  FILENAME_FANART_TBN,
 
   /** [moviename]-fanart.png */
-  MOVIENAME_FANART_PNG, /** [moviename]-fanart.jpg */
-  MOVIENAME_FANART_JPG, /** [moviename]-fanart.tbn */
-  @Deprecated MOVIENAME_FANART_TBN,
+  MOVIENAME_FANART_PNG,
+  /** [moviename]-fanart.jpg */
+  MOVIENAME_FANART_JPG,
+  /** [moviename]-fanart.gif */
+  MOVIENAME_FANART_GIF,
+  /** [moviename]-fanart.tbn */
+  @Deprecated
+  MOVIENAME_FANART_TBN,
 
   /** fanart.png */
-  FANART_PNG, /** fanart.jpg */
-  FANART_JPG, /** fanart.tbn */
-  @Deprecated FANART_TBN;
+  FANART_PNG,
+  /** fanart.jpg */
+  FANART_JPG,
+  /** fanart.gif */
+  FANART_GIF,
+  /** fanart.tbn */
+  @Deprecated
+  FANART_TBN;
 }

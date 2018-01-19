@@ -46,8 +46,10 @@ import org.tinymediamanager.core.entities.MediaEntity;
 import org.tinymediamanager.core.entities.MediaFile;
 import org.tinymediamanager.core.entities.MediaFileSubtitle;
 import org.tinymediamanager.core.entities.Person;
+import org.tinymediamanager.core.movie.MovieFanartNaming;
 import org.tinymediamanager.core.movie.MovieList;
 import org.tinymediamanager.core.movie.MovieModuleManager;
+import org.tinymediamanager.core.movie.MoviePosterNaming;
 import org.tinymediamanager.core.movie.MovieSetArtworkHelper;
 import org.tinymediamanager.core.movie.connector.MovieConnectors;
 import org.tinymediamanager.core.movie.entities.Movie;
@@ -136,6 +138,55 @@ public class UpgradeTasks {
       }
       catch (IOException ignored) {
       }
+    }
+
+    // upgrade to v2.9.6
+    if (StrgUtils.compareVersion(v, "2.9.6") < 0) {
+      LOGGER.info("Performing upgrade tasks to version 2.9.6");
+      Globals.settings.addVideoFileTypes(".evo"); // hd-dvd
+      Globals.settings.saveSettings();
+    }
+
+    // upgrade to v2.9.7
+    if (StrgUtils.compareVersion(v, "2.9.7") < 0) {
+      LOGGER.info("Performing upgrade tasks to version 2.9.7");
+      // add equivalent GIF naming
+
+      List<MoviePosterNaming> pnam = MovieModuleManager.MOVIE_SETTINGS.getMoviePosterFilenames();
+      if (pnam.contains(MoviePosterNaming.FILENAME_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMoviePosterFilename(MoviePosterNaming.FILENAME_GIF);
+      }
+      if (pnam.contains(MoviePosterNaming.FILENAME_POSTER_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMoviePosterFilename(MoviePosterNaming.FILENAME_POSTER_GIF);
+      }
+      if (pnam.contains(MoviePosterNaming.FOLDER_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMoviePosterFilename(MoviePosterNaming.FOLDER_GIF);
+      }
+      if (pnam.contains(MoviePosterNaming.MOVIE_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMoviePosterFilename(MoviePosterNaming.MOVIE_GIF);
+      }
+      if (pnam.contains(MoviePosterNaming.MOVIENAME_POSTER_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMoviePosterFilename(MoviePosterNaming.MOVIENAME_POSTER_GIF);
+      }
+      if (pnam.contains(MoviePosterNaming.POSTER_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMoviePosterFilename(MoviePosterNaming.POSTER_GIF);
+      }
+
+      List<MovieFanartNaming> fnam = MovieModuleManager.MOVIE_SETTINGS.getMovieFanartFilenames();
+      if (fnam.contains(MovieFanartNaming.FANART_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMovieFanartFilename(MovieFanartNaming.FANART_GIF);
+      }
+      if (fnam.contains(MovieFanartNaming.FILENAME_FANART2_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMovieFanartFilename(MovieFanartNaming.FILENAME_FANART2_GIF);
+      }
+      if (fnam.contains(MovieFanartNaming.FILENAME_FANART_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMovieFanartFilename(MovieFanartNaming.FILENAME_FANART_GIF);
+      }
+      if (fnam.contains(MovieFanartNaming.MOVIENAME_FANART_JPG)) {
+        MovieModuleManager.MOVIE_SETTINGS.addMovieFanartFilename(MovieFanartNaming.MOVIENAME_FANART_GIF);
+      }
+
+      Globals.settings.saveSettings();
     }
   }
 
@@ -323,7 +374,7 @@ public class UpgradeTasks {
             // correct episode path when extracted disc folder
             Path discRoot = episode.getPathNIO().toAbsolutePath(); // folder
             String folder = tvShow.getPathNIO().relativize(discRoot).toString().toUpperCase(Locale.ROOT); // relative
-            while (folder.contains("BDMV") || folder.contains("VIDEO_TS")) {
+            while (folder.contains("BDMV") || folder.contains("VIDEO_TS") || folder.contains("HVDVD_TS")) {
               discRoot = discRoot.getParent();
               folder = tvShow.getPathNIO().relativize(discRoot).toString().toUpperCase(Locale.ROOT); // reevaluate
               episode.setPath(discRoot.toAbsolutePath().toString());

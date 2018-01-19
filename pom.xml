@@ -23,7 +23,7 @@
     </parent>
 
     <artifactId>tinyMediaManager</artifactId>
-    <version>2.9.5-SNAPSHOT</version>
+    <version>2.9.8-SNAPSHOT</version>
     <name>tinyMediaManager</name>
 
     <scm>
@@ -43,8 +43,8 @@
         <dependency>
             <groupId>org.tinymediamanager</groupId>
             <artifactId>api-scraper</artifactId>
-            <!-- stick to 2.6 for v2! -->
-            <version>2.6</version>
+            <!-- stick to 2.x for v2! -->
+            <version>2.8</version>
         </dependency>
         <dependency>
             <groupId>org.tinymediamanager</groupId>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.tinymediamanager.plugins</groupId>
             <artifactId>scraper-anidb</artifactId>
-            <version>1.6-SNAPSHOT</version>
+            <version>1.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -83,13 +83,13 @@
         <dependency>
             <groupId>org.tinymediamanager.plugins</groupId>
             <artifactId>scraper-imdb</artifactId>
-            <version>1.10-SNAPSHOT</version>
+            <version>1.12-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.tinymediamanager.plugins</groupId>
             <artifactId>scraper-kodi</artifactId>
-            <version>1.8-SNAPSHOT</version>
+            <version>1.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -122,7 +122,7 @@
         <dependency>
             <groupId>org.tinymediamanager.plugins</groupId>
             <artifactId>scraper-animated</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
             <scope>provided</scope>
         </dependency>
         <!--dependency> <groupId>org.tinymediamanager.plugins</groupId> <artifactId>scraper-thesubdb</artifactId> 
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>org.tinymediamanager.plugins</groupId>
             <artifactId>scraper-tmdb</artifactId>
-            <version>1.11-SNAPSHOT</version>
+            <version>1.11</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -211,7 +211,7 @@
         <dependency>
             <groupId>com.github.stephenc.java-iso-tools</groupId>
             <artifactId>loop-fs-iso-impl</artifactId>
-            <version>2.0.1-TMM</version>
+            <version>2.0.2-TMM</version>
         </dependency>
         <dependency>
             <groupId>org.nanohttpd</groupId>

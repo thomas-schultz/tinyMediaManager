@@ -303,19 +303,23 @@ public class MovieArtworkHelper {
       if (MovieModuleManager.MOVIE_SETTINGS.getMovieFanartFilenames().contains(MovieFanartNaming.FILENAME_FANART_JPG)) {
         fanartnames.add(MovieFanartNaming.FILENAME_FANART_JPG);
         fanartnames.add(MovieFanartNaming.FILENAME_FANART_PNG);
+        fanartnames.add(MovieFanartNaming.FILENAME_FANART_GIF);
       }
       if (MovieModuleManager.MOVIE_SETTINGS.getMovieFanartFilenames().contains(MovieFanartNaming.FILENAME_FANART2_JPG)) {
         fanartnames.add(MovieFanartNaming.FILENAME_FANART2_JPG);
         fanartnames.add(MovieFanartNaming.FILENAME_FANART2_PNG);
+        fanartnames.add(MovieFanartNaming.FILENAME_FANART2_GIF);
       }
       if (fanartnames.isEmpty()) {
         fanartnames.add(MovieFanartNaming.FILENAME_FANART_JPG);
         fanartnames.add(MovieFanartNaming.FILENAME_FANART_PNG);
+        fanartnames.add(MovieFanartNaming.FILENAME_FANART_GIF);
       }
     }
     else if (movie.isDisc()) {
       fanartnames.add(MovieFanartNaming.FANART_JPG);
       fanartnames.add(MovieFanartNaming.FANART_PNG);
+      fanartnames.add(MovieFanartNaming.FANART_GIF);
     }
     else {
       fanartnames = MovieModuleManager.MOVIE_SETTINGS.getMovieFanartFilenames();
@@ -384,28 +388,34 @@ public class MovieArtworkHelper {
       if (MovieModuleManager.MOVIE_SETTINGS.getMoviePosterFilenames().contains(MoviePosterNaming.FILENAME_POSTER_JPG)) {
         posternames.add(MoviePosterNaming.FILENAME_POSTER_JPG);
         posternames.add(MoviePosterNaming.FILENAME_POSTER_PNG);
+        posternames.add(MoviePosterNaming.FILENAME_POSTER_GIF);
       }
       if (MovieModuleManager.MOVIE_SETTINGS.getMoviePosterFilenames().contains(MoviePosterNaming.FILENAME_JPG)) {
         posternames.add(MoviePosterNaming.FILENAME_JPG);
         posternames.add(MoviePosterNaming.FILENAME_PNG);
+        posternames.add(MoviePosterNaming.FILENAME_GIF);
       }
       if (posternames.isEmpty()) {
         posternames.add(MoviePosterNaming.FILENAME_POSTER_JPG);
         posternames.add(MoviePosterNaming.FILENAME_POSTER_PNG);
+        posternames.add(MoviePosterNaming.FILENAME_POSTER_GIF);
       }
     }
     else if (movie.isDisc()) {
       if (MovieModuleManager.MOVIE_SETTINGS.getMoviePosterFilenames().contains(MoviePosterNaming.FOLDER_JPG)) {
         posternames.add(MoviePosterNaming.FOLDER_JPG);
         posternames.add(MoviePosterNaming.FOLDER_PNG);
+        posternames.add(MoviePosterNaming.FOLDER_GIF);
       }
       if (MovieModuleManager.MOVIE_SETTINGS.getMoviePosterFilenames().contains(MoviePosterNaming.POSTER_JPG) || posternames.isEmpty()) {
         posternames.add(MoviePosterNaming.POSTER_JPG);
         posternames.add(MoviePosterNaming.POSTER_PNG);
+        posternames.add(MoviePosterNaming.POSTER_GIF);
       }
       if (posternames.isEmpty()) {
         posternames.add(MoviePosterNaming.FOLDER_JPG);
         posternames.add(MoviePosterNaming.FOLDER_PNG);
+        posternames.add(MoviePosterNaming.FOLDER_GIF);
       }
     }
     else {
@@ -494,6 +504,9 @@ public class MovieArtworkHelper {
       case FANART_JPG:
         filename += "fanart.jpg";
         break;
+      case FANART_GIF:
+        filename += "fanart.gif";
+        break;
       case FANART_TBN:
         filename += "fanart.tbn";
         break;
@@ -503,11 +516,17 @@ public class MovieArtworkHelper {
       case FILENAME_FANART_JPG:
         filename += mediafile.isEmpty() ? "" : mediafile + "-fanart.jpg";
         break;
+      case FILENAME_FANART_GIF:
+        filename += mediafile.isEmpty() ? "" : mediafile + "-fanart.gif";
+        break;
       case FILENAME_FANART2_PNG:
         filename += mediafile.isEmpty() ? "" : mediafile + ".fanart.png";
         break;
       case FILENAME_FANART2_JPG:
         filename += mediafile.isEmpty() ? "" : mediafile + ".fanart.jpg";
+        break;
+      case FILENAME_FANART2_GIF:
+        filename += mediafile.isEmpty() ? "" : mediafile + ".fanart.gif";
         break;
       case FILENAME_FANART_TBN:
         filename += mediafile.isEmpty() ? "" : mediafile + "-fanart.tbn";
@@ -517,6 +536,9 @@ public class MovieArtworkHelper {
         break;
       case MOVIENAME_FANART_JPG:
         filename += movie.getTitle() + "-fanart.jpg";
+        break;
+      case MOVIENAME_FANART_GIF:
+        filename += movie.getTitle() + "-fanart.gif";
         break;
       case MOVIENAME_FANART_TBN:
         filename += movie.getTitle() + "-fanart.tbn";
@@ -558,6 +580,9 @@ public class MovieArtworkHelper {
       case MOVIENAME_POSTER_JPG:
         filename += movie.getTitle() + ".jpg";
         break;
+      case MOVIENAME_POSTER_GIF:
+        filename += movie.getTitle() + ".gif";
+        break;
       case MOVIENAME_POSTER_TBN:
         filename += movie.getTitle() + ".tbn";
         break;
@@ -566,6 +591,9 @@ public class MovieArtworkHelper {
         break;
       case FILENAME_POSTER_JPG:
         filename += mediafile.isEmpty() ? "" : mediafile + "-poster.jpg";
+        break;
+      case FILENAME_POSTER_GIF:
+        filename += mediafile.isEmpty() ? "" : mediafile + "-poster.gif";
         break;
       case FILENAME_POSTER_TBN:
         filename += mediafile.isEmpty() ? "" : mediafile + "-poster.tbn";
@@ -576,6 +604,9 @@ public class MovieArtworkHelper {
       case FILENAME_JPG:
         filename += mediafile.isEmpty() ? "" : mediafile + ".jpg";
         break;
+      case FILENAME_GIF:
+        filename += mediafile.isEmpty() ? "" : mediafile + ".gif";
+        break;
       case FILENAME_TBN:
         filename += mediafile.isEmpty() ? "" : mediafile + ".tbn";
         break;
@@ -584,6 +615,9 @@ public class MovieArtworkHelper {
         break;
       case MOVIE_JPG:
         filename += "movie.jpg";
+        break;
+      case MOVIE_GIF:
+        filename += "movie.gif";
         break;
       case MOVIE_TBN:
         filename += "movie.tbn";
@@ -594,6 +628,9 @@ public class MovieArtworkHelper {
       case POSTER_JPG:
         filename += "poster.jpg";
         break;
+      case POSTER_GIF:
+        filename += "poster.gif";
+        break;
       case POSTER_TBN:
         filename += "poster.tbn";
         break;
@@ -602,6 +639,9 @@ public class MovieArtworkHelper {
         break;
       case FOLDER_JPG:
         filename += "folder.jpg";
+        break;
+      case FOLDER_GIF:
+        filename += "folder.gif";
         break;
       case FOLDER_TBN:
         filename += "folder.tbn";

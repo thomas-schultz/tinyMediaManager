@@ -87,6 +87,7 @@ public class MovieSettings extends AbstractModelObject {
   private final static String             BAD_WORDS                                = "badWords";
   private final static String             ENTRY                                    = "entry";
   private final static String             RUNTIME_FROM_MI                          = "runtimeFromMediaInfo";
+  private final static String             INCLUDE_EXTERNAL_AUDIO_STREAMS           = "includeExternalAudioStreams";
   private final static String             ASCII_REPLACEMENT                        = "asciiReplacement";
   private final static String             YEAR_COLUMN_VISIBLE                      = "yearColumnVisible";
   private final static String             NFO_COLUMN_VISIBLE                       = "nfoColumnVisible";
@@ -195,6 +196,7 @@ public class MovieSettings extends AbstractModelObject {
 
   // misc
   private boolean                         runtimeFromMediaInfo                     = false;
+  private boolean                         includeExternalAudioStreams              = false;
   private boolean                         syncTrakt                                = false;
 
   // UI settings
@@ -710,6 +712,17 @@ public class MovieSettings extends AbstractModelObject {
     this.runtimeFromMediaInfo = newValue;
     firePropertyChange(RUNTIME_FROM_MI, oldValue, newValue);
   }
+
+  public boolean isIncludeExternalAudioStreams() {
+    return includeExternalAudioStreams;
+  }
+
+  public void setIncludeExternalAudioStreams(boolean newValue) {
+    boolean oldValue = this.includeExternalAudioStreams;
+    this.includeExternalAudioStreams = newValue;
+    firePropertyChange(INCLUDE_EXTERNAL_AUDIO_STREAMS, oldValue, newValue);
+  }
+
 
   public boolean isAsciiReplacement() {
     return asciiReplacement;

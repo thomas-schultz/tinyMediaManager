@@ -47,15 +47,15 @@ resource = [windows-x86] native/windows-x86/mingwm10.dll
 
 # templates
 resource = templates/readme.txt
-uresource = templates/DetailExampleHtml.jar
-uresource = templates/DetailExample2Html.jar
-uresource = templates/ExcelXml.jar
-uresource = templates/ListExampleCsv.jar
-uresource = templates/ListExampleHtml.jar
-uresource = templates/ListExampleXml.jar
-uresource = templates/jQueryliscious.jar
-uresource = templates/SimpleConfluence.jar
-uresource = templates/TvShowDetailExampleXml.jar
+resource = templates/DetailExampleHtml.jar
+resource = templates/DetailExample2Html.jar
+resource = templates/ExcelXml.jar
+resource = templates/ListExampleCsv.jar
+resource = templates/ListExampleHtml.jar
+resource = templates/ListExampleXml.jar
+resource = templates/jQueryliscious.jar
+resource = templates/SimpleConfluence.jar
+resource = templates/TvShowDetailExampleXml.jar
 
 # The main entry point for the application (prefix needed for GD params)
 class = org.tinymediamanager.TinyMediaManager

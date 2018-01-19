@@ -23,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -74,17 +73,17 @@ public class BugReportDialog extends TmmDialog {
   public BugReportDialog() {
     super(BUNDLE.getString("BugReport"), DIALOG_ID);
 
-    setBounds(0,0,600,280);
     getContentPane().setLayout(new BorderLayout(0, 0));
 
     JPanel panelContent = new JPanel();
     getContentPane().add(panelContent, BorderLayout.CENTER);
     panelContent.setLayout(new FormLayout(
         new ColumnSpec[] { FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
-            ColumnSpec.decode("default:grow"), FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"), FormSpecs.RELATED_GAP_COLSPEC, },
-        new RowSpec[] { FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.UNRELATED_GAP_ROWSPEC, RowSpec.decode("default:grow"),
-            FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC, RowSpec.decode("default:grow"), FormSpecs.UNRELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-            FormSpecs.UNRELATED_GAP_ROWSPEC, RowSpec.decode("default:grow"), FormSpecs.UNRELATED_GAP_ROWSPEC, }));
+            ColumnSpec.decode("left:300dlu:grow"), FormSpecs.RELATED_GAP_COLSPEC, },
+        new RowSpec[] { FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, RowSpec.decode("10dlu"), FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("10dlu"), FormSpecs.DEFAULT_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+            FormSpecs.LINE_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("20dlu"),
+            FormSpecs.UNRELATED_GAP_ROWSPEC, }));
 
     final JTextArea taDescription = new JTextArea();
     taDescription.setOpaque(false);
@@ -92,7 +91,18 @@ public class BugReportDialog extends TmmDialog {
     taDescription.setLineWrap(true);
     taDescription.setEditable(false);
     taDescription.setText(BUNDLE.getString("BugReport.description")); //$NON-NLS-1$
-    panelContent.add(taDescription, "2, 2, 6, 1, fill, fill");
+    panelContent.add(taDescription, "2, 2, 4, 1, fill, default");
+
+    final JLabel lblStep1 = new JLabel(BUNDLE.getString("BugReport.step1")); //$NON-NLS-1$
+    panelContent.add(lblStep1, "2, 4, default, top");
+
+    final JTextArea taStep1 = new JTextArea();
+    taStep1.setWrapStyleWord(true);
+    taStep1.setLineWrap(true);
+    taStep1.setText(BUNDLE.getString("BugReport.step1.description")); //$NON-NLS-1$
+    taStep1.setOpaque(false);
+    taStep1.setEditable(false);
+    panelContent.add(taStep1, "5, 4, fill, default");
 
     final JButton btnSaveLogs = new JButton(BUNDLE.getString("BugReport.createlogs")); //$NON-NLS-1$
     btnSaveLogs.addActionListener(new ActionListener() {
@@ -103,7 +113,7 @@ public class BugReportDialog extends TmmDialog {
           String path = TmmProperties.getInstance().getProperty(DIALOG_ID + ".path");
           Path file = TmmUIHelper.saveFile(BUNDLE.getString("BugReport.savelogs"), path, "tmm_logs.zip", //$NON-NLS-1$
               new FileNameExtensionFilter("Zip files", ".zip"));
-          if (Files.exists(file)) {
+          if (file != null) {
             writeLogsFile(file.toFile());
             TmmProperties.getInstance().putProperty(DIALOG_ID + ".path", file.toAbsolutePath().toString());
           }
@@ -113,16 +123,18 @@ public class BugReportDialog extends TmmDialog {
         }
       }
     });
+    panelContent.add(btnSaveLogs, "5, 5");
 
-    final JLabel lblStep1 = new JLabel(BUNDLE.getString("BugReport.step1")); //$NON-NLS-1$
-    panelContent.add(lblStep1, "2, 4, default, top");
+    final JLabel lblStep2 = new JLabel(BUNDLE.getString("BugReport.step2")); //$NON-NLS-1$
+    panelContent.add(lblStep2, "2, 8, default, top");
 
-    final JTextArea taStep1 = new JTextArea();
-    taStep1.setText(BUNDLE.getString("BugReport.step1.description")); //$NON-NLS-1$
-    taStep1.setOpaque(false);
-    taStep1.setEditable(false);
-    panelContent.add(taStep1, "5, 4, fill, fill");
-    panelContent.add(btnSaveLogs, "7, 4");
+    final JTextArea taStep2 = new JTextArea();
+    taStep2.setWrapStyleWord(true);
+    taStep2.setLineWrap(true);
+    taStep2.setOpaque(false);
+    taStep2.setEditable(false);
+    taStep2.setText(BUNDLE.getString("BugReport.step2.description")); //$NON-NLS-1$
+    panelContent.add(taStep2, "5, 8, fill, default");
 
     final JButton btnCreateIssue = new JButton(BUNDLE.getString("BugReport.craeteissue")); //$NON-NLS-1$
     btnCreateIssue.addActionListener(new ActionListener() {
@@ -151,22 +163,13 @@ public class BugReportDialog extends TmmDialog {
         }
       }
     });
-
-    final JLabel lblStep2 = new JLabel(BUNDLE.getString("BugReport.step2")); //$NON-NLS-1$
-    panelContent.add(lblStep2, "2, 6, default, top");
-
-    final JTextArea taStep2 = new JTextArea();
-    taStep2.setOpaque(false);
-    taStep2.setEditable(false);
-    taStep2.setText(BUNDLE.getString("BugReport.step2.description")); //$NON-NLS-1$
-    panelContent.add(taStep2, "5, 6, fill, fill");
-    panelContent.add(btnCreateIssue, "7, 6");
+    panelContent.add(btnCreateIssue, "5, 9");
 
     final JLabel lblHintIcon = new JLabel(IconManager.HINT);
-    panelContent.add(lblHintIcon, "3, 8");
+    panelContent.add(lblHintIcon, "3, 11");
 
     final JLabel lblHint = new JLabel(BUNDLE.getString("BugReport.languagehint")); //$NON-NLS-1$
-    panelContent.add(lblHint, "5, 8");
+    panelContent.add(lblHint, "5, 11");
 
     JPanel panelButtons = new JPanel();
 

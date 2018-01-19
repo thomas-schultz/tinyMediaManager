@@ -1335,6 +1335,9 @@ public class Movie extends MediaEntity {
           if (Files.exists(getPathNIO().resolve("VIDEO_TS.ifo")) || Files.exists(getPathNIO().resolve("VIDEO_TS"))) {
             filename = "VIDEO_TS.nfo";
           }
+          else if (Files.exists(getPathNIO().resolve("HVDVD_TS.ifo")) || Files.exists(getPathNIO().resolve("HVDVD_TS"))) {
+            filename = "HVDVD_TS.nfo";
+          }
           else if (Files.exists(getPathNIO().resolve("index.bdmv"))) {
             filename = "index.nfo";
           }
@@ -1355,6 +1358,10 @@ public class Movie extends MediaEntity {
           Path dir = getPathNIO().resolve("VIDEO_TS");
           if (Files.isDirectory(dir)) {
             filename = dir.resolve("VIDEO_TS.nfo").toString();
+          }
+          dir = getPathNIO().resolve("HVDVD_TS");
+          if (Files.isDirectory(dir)) {
+            filename = dir.resolve("HVDVD_TS.nfo").toString();
           }
           dir = getPathNIO().resolve("BDMV");
           if (Files.isDirectory(dir)) {

@@ -78,6 +78,7 @@ import org.tinymediamanager.scraper.util.StrgUtils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
@@ -93,6 +94,7 @@ public class TvShowEpisode extends MediaEntity implements Comparable<TvShowEpiso
   @JsonProperty
   private int                                episode               = -1;
   @JsonProperty
+  @JsonInclude(JsonInclude.Include.ALWAYS)
   private int                                season                = -1;
   @JsonProperty
   private int                                dvdSeason             = -1;

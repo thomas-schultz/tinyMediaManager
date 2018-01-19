@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,7 @@ import org.tinymediamanager.core.movie.MovieModuleManager;
 import org.tinymediamanager.core.movie.entities.Movie;
 import org.tinymediamanager.core.threading.TmmThreadPool;
 import org.tinymediamanager.ui.UTF8Control;
+import org.tinymediamanager.ui.dialogs.MessageSummaryDialog;
 
 /**
  * The Class MissingMovieTask.
@@ -76,6 +79,8 @@ public class MovieFindMissingTask extends TmmThreadPool {
 
   @Override
   public void doInBackground() {
+    final List<String> foundMfs = new ArrayList<>();
+
     try {
       StopWatch stopWatch = new StopWatch();
       stopWatch.start();
@@ -102,8 +107,7 @@ public class MovieFindMissingTask extends TmmThreadPool {
           MediaFile mf = new MediaFile(file);
           if (!mfs.contains(mf)) {
             LOGGER.info("found possible movie file " + file);
-            MessageManager.instance
-                .pushMessage(new Message(MessageLevel.ERROR, "possible movie", "found possible movie " + file, new String[] { ds }));
+            foundMfs.add(file.toString());
           }
         }
         if (cancel) {
@@ -117,6 +121,21 @@ public class MovieFindMissingTask extends TmmThreadPool {
     catch (Exception e) {
       LOGGER.error("Thread crashed", e);
       MessageManager.instance.pushMessage(new Message(MessageLevel.ERROR, "update.datasource", "message.update.threadcrashed"));
+    }
+
+    if (!foundMfs.isEmpty()) {
+      try {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          @Override
+          public void run() {
+            MessageSummaryDialog dialog = new MessageSummaryDialog(foundMfs);
+            dialog.setVisible(true);
+          }
+        });
+      }
+      catch (Exception e) {
+        LOGGER.error("Showing results crashed " + e.getMessage());
+      }
     }
   }
 

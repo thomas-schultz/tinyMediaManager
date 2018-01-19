@@ -171,6 +171,9 @@ public class TvShowEpisodeToXbmcNfoConnector {
       if (mf.isDVDFile()) {
         nfoFilename = "VIDEO_TS.nfo";
       }
+      if (mf.isHdDVDFile()) {
+        nfoFilename = "HVDVD_TS.nfo";
+      }
     }
 
     File nfoFile = new File(episode.getPath(), nfoFilename);
