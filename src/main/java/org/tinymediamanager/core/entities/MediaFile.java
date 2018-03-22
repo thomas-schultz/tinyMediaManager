@@ -878,7 +878,7 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
   }
 
   /**
-   * gets the audio codec<br>
+   * gets the audio codec for the best stream<br>
    * (w/o punctuation; eg AC-3 => AC3).
    *
    * @return the audio codec
@@ -895,6 +895,29 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     return codec;
   }
 
+  /**
+   * gets the audio codec for the given stream<br>
+   * (w/o punctuation; eg AC-3 => AC3; index >= 1).
+   *
+   * @return the audio codec
+   */
+  public String getAudioCodec(Integer index) {
+    String codec = "";
+
+    try {
+      codec = getAudioStreams().get(index - 1).getCodec();
+    }
+    catch (IndexOutOfBoundsException e) {
+      codec = "";
+    }
+    return codec;
+  }
+
+  /**
+   * gets the audio best audio stream from all available
+   *
+   * @return the audio stream with the highest channel count
+   */
   private MediaFileAudioStream getBestAudioStream() {
     MediaFileAudioStream highestStream = null;
     for (MediaFileAudioStream stream : audioStreams) {
@@ -908,6 +931,11 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     return highestStream;
   }
 
+  /**
+   * gets the audio language for the best stream
+   *
+   * @return the audio language
+   */
   public String getAudioLanguage() {
     String language = "";
 
@@ -915,6 +943,24 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     MediaFileAudioStream highestStream = getBestAudioStream();
     if (highestStream != null) {
       language = highestStream.getLanguage();
+    }
+
+    return language;
+  }
+
+  /**
+   * gets the audio language for the given stream
+   *
+   * @return the audio language
+   */
+  public String getAudioLanguage(Integer index) {
+    String language = "";
+
+    try {
+      language = getAudioStreams().get(index - 1).getLanguage();
+    }
+    catch (IndexOutOfBoundsException e) {
+      language = "";
     }
 
     return language;
