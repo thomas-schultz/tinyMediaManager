@@ -81,11 +81,39 @@ public interface IMediaInformation {
   public String getMediaInfoAudioCodec();
 
   /**
+   * gets audio codecs as array
+   * 
+   * @return the array of audio codecs
+   */
+  public String[] getMediaInfoAudioCodecN();
+
+  /**
    * gets the audio channels (e.g, 6 at 5.1 sound)
    * 
    * @return the audio channels with a trailing ch
    */
   public String getMediaInfoAudioChannels();
+
+  /**
+   * gets the audio channels as array
+   * 
+   * @return the array of audio channels
+   */
+  public String[] getMediaInfoAudioChannelsN();
+
+  /**
+   * gets the audio language (e.g, ENG)
+   * 
+   * @return the audio language in ISO 639
+   */
+  public String getMediaInfoAudioLanguage();
+
+  /**
+   * gets audio language as array
+   * 
+   * @return the array of audio languages
+   */
+  public String[] getMediaInfoAudioLanguageN();
 
   /**
    * gets the container format
