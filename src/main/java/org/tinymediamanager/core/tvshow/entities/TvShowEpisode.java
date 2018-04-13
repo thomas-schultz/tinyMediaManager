@@ -1411,6 +1411,22 @@ public class TvShowEpisode extends MediaEntity implements Comparable<TvShowEpiso
   }
 
   @Override
+  public String[] getMediaInfoAudioCodecN() {
+    List<MediaFile> videos = getMediaFiles(MediaFileType.VIDEO);
+    if (videos.size() > 0) {
+      MediaFile mediaFile = videos.get(0);
+      int streams = mediaFile.getAudioStreams().size();
+      String[] codecsN = new String[streams];
+      for (int i = 0; i < streams; i++) {
+        codecsN[i] = mediaFile.getAudioCodec(i);
+      }
+      return codecsN;
+    }
+
+    return new String[0];
+  }
+
+  @Override
   public double getMediaInfoFrameRate() {
     List<MediaFile> videos = getMediaFiles(MediaFileType.VIDEO);
     if (videos.size() > 0) {
@@ -1430,6 +1446,49 @@ public class TvShowEpisode extends MediaEntity implements Comparable<TvShowEpiso
     }
 
     return "";
+  }
+
+  @Override
+  public String[] getMediaInfoAudioChannelsN() {
+    List<MediaFile> videos = getMediaFiles(MediaFileType.VIDEO);
+    if (videos.size() > 0) {
+      MediaFile mediaFile = videos.get(0);
+      int streams = mediaFile.getAudioStreams().size();
+      String[] channelsN = new String[streams];
+      for (int i = 0; i < streams; i++) {
+        channelsN[i] = mediaFile.getAudioChannels(i);
+      }
+      return channelsN;
+    }
+
+    return new String[0];
+  }
+
+  @Override
+  public String getMediaInfoAudioLanguage() {
+    List<MediaFile> videos = getMediaFiles(MediaFileType.VIDEO);
+    if (videos.size() > 0) {
+      MediaFile mediaFile = videos.get(0);
+      return mediaFile.getAudioLanguage();
+    }
+
+    return "";
+  }
+
+  @Override
+  public String[] getMediaInfoAudioLanguageN() {
+    List<MediaFile> videos = getMediaFiles(MediaFileType.VIDEO);
+    if (videos.size() > 0) {
+      MediaFile mediaFile = videos.get(0);
+      int streams = mediaFile.getAudioStreams().size();
+      String[] languagesN = new String[streams];
+      for (int i = 0; i < streams; i++) {
+        languagesN[i] = mediaFile.getAudioLanguage(i);
+      }
+      return languagesN;
+    }
+
+    return new String[0];
   }
 
   @Override

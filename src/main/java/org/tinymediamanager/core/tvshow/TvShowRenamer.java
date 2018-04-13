@@ -117,7 +117,11 @@ public class TvShowRenamer {
     tokenMap.put("videoFormat", "episode.mediaInfoVideoFormat");
     tokenMap.put("videoResolution", "episode.mediaInfoVideoResolution");
     tokenMap.put("audioCodec", "episode.mediaInfoAudioCodec");
+    tokenMap.put("audioCodecN", "episode.mediaInfoAudioCodecN");
     tokenMap.put("audioChannels", "episode.mediaInfoAudioChannels");
+    tokenMap.put("audioChannelsN", "episode.mediaInfoAudioChannelsN");
+    tokenMap.put("audioLanguage", "episode.mediaInfoAudioLanguage");
+    tokenMap.put("audioLanguageN", "episode.mediaInfoAudioLanguageN");
     tokenMap.put("3Dformat", "episode.video3DFormat");
 
     tokenMap.put("mediaSource", "episode.mediaSource");

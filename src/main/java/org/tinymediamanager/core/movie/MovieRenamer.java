@@ -107,7 +107,11 @@ public class MovieRenamer {
     tokenMap.put("videoFormat", "movie.mediaInfoVideoFormat");
     tokenMap.put("videoResolution", "movie.mediaInfoVideoResolution");
     tokenMap.put("audioCodec", "movie.mediaInfoAudioCodec");
+    tokenMap.put("audioCodecN", "movie.mediaInfoAudioCodecN");
     tokenMap.put("audioChannels", "movie.mediaInfoAudioChannels");
+    tokenMap.put("audioChannelsN", "movie.mediaInfoAudioChannelsN");
+    tokenMap.put("audioLanguage", "movie.mediaInfoAudioLanguage");
+    tokenMap.put("audioLanguageN", "movie.mediaInfoAudioLanguageN");
     tokenMap.put("3Dformat", "movie.video3DFormat");
 
     tokenMap.put("mediaSource", "movie.mediaSource");
@@ -139,8 +143,10 @@ public class MovieRenamer {
       Pattern pattern = Pattern.compile("\\$\\{(.*?)," + entry.getKey() + "([^a-zA-Z0-9])", Pattern.CASE_INSENSITIVE);
       Matcher matcher = pattern.matcher(morphedTemplate);
       while (matcher.find()) {
+        System.out.println("HIT! " + matcher.group(1) + "," + entry.getValue() + matcher.group(2));
         morphedTemplate = morphedTemplate.replace(matcher.group(), "${" + matcher.group(1) + "," + entry.getValue() + matcher.group(2));
       }
+      // System.out.println(morphedTemplate);
     }
 
     return morphedTemplate;
@@ -1062,12 +1068,12 @@ public class MovieRenamer {
   }
 
   /**
-   * gets the token value ($x) from specified movie object
+   * gets the token value (${x}) from specified movie object
    * 
    * @param movie
    *          our movie
    * @param token
-   *          the $x token
+   *          the ${x} token
    * @return value or empty string
    */
   public static String getTokenValue(Movie movie, String token) {
@@ -1114,8 +1120,10 @@ public class MovieRenamer {
    * @return the string
    */
   public static String createDestination(String template, Movie movie, boolean forFilename) {
-
     String newDestination = getTokenValue(movie, template);
+    if (template == "${audioCodecN}") {
+      LOGGER.error("#1# createDestination() " + template + "," + newDestination);
+    }
 
     // replace empty brackets
     newDestination = newDestination.replaceAll("\\([ ]?\\)", "");
