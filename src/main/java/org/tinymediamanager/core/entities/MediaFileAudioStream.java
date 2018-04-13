@@ -93,7 +93,7 @@ public class MediaFileAudioStream extends AbstractModelObject {
   }
 
   public String getLanguage() {
-    return language;
+    return language.toUpperCase();
   }
 
   public void setCodec(String codec) {

@@ -897,7 +897,7 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
 
   /**
    * gets the audio codec for the given stream<br>
-   * (w/o punctuation; eg AC-3 => AC3; index >= 1).
+   * (w/o punctuation; eg AC-3 => AC3).
    *
    * @return the audio codec
    */
@@ -905,7 +905,7 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     String codec = "";
 
     try {
-      codec = getAudioStreams().get(index - 1).getCodec();
+      codec = getAudioStreams().get(index).getCodec();
     }
     catch (IndexOutOfBoundsException e) {
       codec = "";
@@ -939,7 +939,6 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
   public String getAudioLanguage() {
     String language = "";
 
-    // get audio stream with highest channel count
     MediaFileAudioStream highestStream = getBestAudioStream();
     if (highestStream != null) {
       language = highestStream.getLanguage();
@@ -957,7 +956,7 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     String language = "";
 
     try {
-      language = getAudioStreams().get(index - 1).getLanguage();
+      language = getAudioStreams().get(index).getLanguage();
     }
     catch (IndexOutOfBoundsException e) {
       language = "";
@@ -1146,15 +1145,36 @@ public class MediaFile extends AbstractModelObject implements Comparable<MediaFi
     firePropertyChange("exactVideoFormat", oldValue, newValue);
   }
 
+  /**
+   * gets the audio channel for the best stream
+   *
+   * @return the audio channel
+   */
   public String getAudioChannels() {
     String channels = "";
 
-    // get audio stream with highest channel count
     MediaFileAudioStream highestStream = getBestAudioStream();
     if (highestStream != null) {
       channels = highestStream.getChannelsAsInt() + "ch";
     }
 
+    return channels;
+  }
+
+  /**
+   * gets the audio channel for the given stream
+   *
+   * @return the audio channel
+   */
+  public String getAudioChannels(Integer index) {
+    String channels = "";
+
+    try {
+      channels = getAudioStreams().get(index).getChannelsAsInt() + "ch";
+    }
+    catch (IndexOutOfBoundsException e) {
+      channels = "";
+    }
     return channels;
   }
 
